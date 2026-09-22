@@ -985,7 +985,8 @@
                         console.log(response);
                         //alert(response.status); alert(response.result);
                         localStorage.setItem('formSubmitted', 'true');
-                        window.location.href = 'thankyou.html';
+                        // window.location.href = 'thankyou.html';
+                        alert('Thank you your order placed')
                     })
                     .catch(error => {
                         console.error('Error!', error.message);
