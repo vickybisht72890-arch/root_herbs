@@ -679,8 +679,14 @@
                                     <p style="color: #fff;margin: 10px 0px;">इस ऑफ़र को अगले पाठक को भेजे जाने से पहले
                                         ऑफर रेट बुक कर लें!</p>
 
+                                    <iframe name="google-sheet-frame" id="google-sheet-frame" style="display:none;">
+                                    </iframe>
+
                                     <form name="google-sheet" autocomplete="off" id="buyForm"
+                                        action="https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec"
+                                        target="google-sheet-frame" method="POST"
                                         class="space-y-6 w-[100%] mx-auto mt-6" method="post">
+
                                         <input name="Source" type="hidden" value="Offer Rs 1499" />
                                         <input name="product_id" type="hidden" value="1" />
                                         <input name="channel_id" type="hidden" value="Munna" />
@@ -960,79 +966,222 @@
 
     <script>
 
-        const scriptURL =
-            'https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec';
+        document.addEventListener("DOMContentLoaded", function () {
 
-        const forms = document.querySelectorAll(
-            'form[name="google-sheet"]'
-        );
+            // Google Apps Script Web App URL
+            const scriptURL =
+                "https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec";
 
-        forms.forEach(form => {
 
-            form.addEventListener('submit', async function (e) {
+            // Get form
+            const form = document.getElementById("buyForm");
 
-                e.preventDefault();
+
+            // Check form exists
+            if (!form) {
+                console.error("❌ Form with id 'buyForm' not found!");
+                return;
+            }
+
+
+            // Get submit button
+            const submitButton =
+                form.querySelector('button[type="submit"]');
+
+
+            // Submit event
+            form.addEventListener("submit", async function (event) {
+
+                // Stop normal form submission
+                event.preventDefault();
+
 
                 // Validate form
                 if (!form.checkValidity()) {
+
                     form.reportValidity();
+
                     return;
                 }
 
-                // Submit button
-                const submitButton =
-                    form.querySelector('button[type="submit"]');
 
+                // Save original button text
                 const originalButtonText =
                     submitButton.textContent;
 
+
+                // Disable button
                 submitButton.disabled = true;
+
                 submitButton.textContent =
-                    'Processing your order...';
+                    "Processing your order...";
+
 
                 try {
 
+                    console.log("=================================");
+                    console.log("Submitting form to Google Sheets");
+                    console.log("=================================");
+
+
+                    // Create FormData
                     const formData = new FormData(form);
 
+
+                    // Print submitted data
+                    console.log("Form Data:");
+
+                    for (const [key, value] of formData.entries()) {
+
+                        console.log(
+                            key + ":",
+                            value
+                        );
+
+                    }
+
+
+                    console.log("---------------------------------");
+                    console.log("Sending request...");
+                    console.log("---------------------------------");
+
+
+                    // Send request to Google Apps Script
                     const response = await fetch(scriptURL, {
-                        method: 'POST',
+
+                        method: "POST",
+
                         body: formData
+
                     });
 
-                    console.log('Response:', response);
 
-                    // Mark form submitted
-                    localStorage.setItem(
-                        'formSubmitted',
-                        'true'
+                    // Print HTTP response information
+                    console.log("HTTP Status:", response.status);
+
+                    console.log(
+                        "Response OK:",
+                        response.ok
                     );
 
-                    alert('Thank you! Your order has been placed.');
 
-                    // Optional:
-                    // window.location.href = 'thankyou.html';
+                    console.log(
+                        "Response URL:",
+                        response.url
+                    );
 
-                    submitButton.disabled = false;
-                    submitButton.textContent =
-                        originalButtonText;
 
-                    // Optional: clear form
-                    form.reset();
+                    // Read response as text
+                    const responseText =
+                        await response.text();
+
+
+                    console.log("---------------------------------");
+
+                    console.log(
+                        "Google Apps Script Response:"
+                    );
+
+                    console.log(responseText);
+
+                    console.log("---------------------------------");
+
+
+                    // Try to convert response to JSON
+                    try {
+
+                        const result =
+                            JSON.parse(responseText);
+
+
+                        console.log(
+                            "Parsed Google Apps Script Response:"
+                        );
+
+                        console.log(result);
+
+
+                        // Check success
+                        if (result.success === true) {
+
+                            console.log(
+                                "✅ Data saved successfully in Google Sheet"
+                            );
+
+
+                            console.log(
+                                "Message:",
+                                result.message
+                            );
+
+
+                            alert(
+                                "Thank you! Your order has been placed successfully."
+                            );
+
+
+                            // Reset form
+                            form.reset();
+
+
+                        } else {
+
+                            console.error(
+                                "❌ Google Apps Script returned an error"
+                            );
+
+
+                            console.error(
+                                "Message:",
+                                result.message
+                            );
+
+
+                            alert(
+                                "Order failed: " +
+                                result.message
+                            );
+
+                        }
+
+
+                    } catch (jsonError) {
+
+                        console.warn(
+                            "⚠️ Response is not valid JSON"
+                        );
+
+
+                        console.log(
+                            "Raw response:",
+                            responseText
+                        );
+
+                    }
+
 
                 } catch (error) {
 
                     console.error(
-                        'Error submitting form:',
-                        error
+                        "❌ Error submitting form:"
                     );
+
+                    console.error(error);
+
 
                     alert(
-                        'Unable to place your order. Please try again.'
+                        "Unable to submit the form. Please try again."
                     );
 
+
+                } finally {
+
+                    // Enable button again
                     submitButton.disabled = false;
+
                     submitButton.textContent =
                         originalButtonText;
+
                 }
 
             });
