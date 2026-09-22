@@ -1057,105 +1057,105 @@
 
 
                     // Print HTTP response information
-                    console.log("HTTP Status:", response.status);
+                    // console.log("HTTP Status:", response.status);
 
-                    console.log(
-                        "Response OK:",
-                        response.ok
-                    );
-
-
-                    console.log(
-                        "Response URL:",
-                        response.url
-                    );
+                    // console.log(
+                    //     "Response OK:",
+                    //     response.ok
+                    // );
 
 
-                    // Read response as text
-                    const responseText =
-                        await response.text();
+                    // console.log(
+                    //     "Response URL:",
+                    //     response.url
+                    // );
 
 
-                    console.log("---------------------------------");
-
-                    console.log(
-                        "Google Apps Script Response:"
-                    );
-
-                    console.log(responseText);
-
-                    console.log("---------------------------------");
+                    // // Read response as text
+                    // const responseText =
+                    //     await response.text();
 
 
-                    // Try to convert response to JSON
-                    try {
+                    // console.log("---------------------------------");
 
-                        const result =
-                            JSON.parse(responseText);
-                        console.log(
-                            "Parsed Google Apps Script Response:"
-                        );
+                    // console.log(
+                    //     "Google Apps Script Response:"
+                    // );
 
-                        console.log(result);
+                    // console.log(responseText);
 
-
-                        // Check success
-                        if (result.success === true) {
-
-                            console.log(
-                                "✅ Data saved successfully in Google Sheet"
-                            );
+                    // console.log("---------------------------------");
 
 
-                            console.log(
-                                "Message:",
-                                result.message
-                            );
+                    // // Try to convert response to JSON
+                    // try {
+
+                    //     const result =
+                    //         JSON.parse(responseText);
+                    //     console.log(
+                    //         "Parsed Google Apps Script Response:"
+                    //     );
+
+                    //     console.log(result);
 
 
-                            alert(
-                                "Thank you! Your order has been placed successfully."
-                            );
+                    //     // Check success
+                    //     if (result.success === true) {
+
+                    //         console.log(
+                    //             "✅ Data saved successfully in Google Sheet"
+                    //         );
 
 
-                            // Reset form
-                            form.reset();
+                    //         console.log(
+                    //             "Message:",
+                    //             result.message
+                    //         );
 
 
-                        } else {
-
-                            console.error(
-                                "❌ Google Apps Script returned an error"
-                            );
+                    //         alert(
+                    //             "Thank you! Your order has been placed successfully."
+                    //         );
 
 
-                            console.error(
-                                "Message:",
-                                result.message
-                            );
+                    //         // Reset form
+                    //         form.reset();
 
 
-                            alert(
-                                "Order failed: " +
-                                result.message
-                            );
+                    //     } else {
 
-                        }
-
-
-                    } catch (jsonError) {
-
-                        console.warn(
-                            "⚠️ Response is not valid JSON"
-                        );
+                    //         console.error(
+                    //             "❌ Google Apps Script returned an error"
+                    //         );
 
 
-                        console.log(
-                            "Raw response:",
-                            responseText
-                        );
+                    //         console.error(
+                    //             "Message:",
+                    //             result.message
+                    //         );
 
-                    }
+
+                    //         alert(
+                    //             "Order failed: " +
+                    //             result.message
+                    //         );
+
+                    //     }
+
+
+                    // } catch (jsonError) {
+
+                    //     console.warn(
+                    //         "⚠️ Response is not valid JSON"
+                    //     );
+
+
+                    //     console.log(
+                    //         "Raw response:",
+                    //         responseText
+                    //     );
+
+                    // }
 
 
                 } catch (error) {
