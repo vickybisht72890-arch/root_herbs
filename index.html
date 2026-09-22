@@ -951,23 +951,22 @@
     <!-- <a class="fixed-footer open order-now-animation bg-yellow-400 box_shaddow" href="#form">अभी ऑर्डर करें</a> -->
 
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js"></script> -->
 
 
     <script>
         //const scriptURL = 'https://aarogyaindia.net/webwsmapi/leadpost.php';
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby3iqVJlnsxQ-zYlkss1fdR-OXtrW6acFibry5lCAKymNTmfKVVI6FOoAajPq7OlXc8ig/exec';
+        // const scriptURL = 'https://script.google.com/macros/s/AKfycby3iqVJlnsxQ-zYlkss1fdR-OXtrW6acFibry5lCAKymNTmfKVVI6FOoAajPq7OlXc8ig/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec';
 
         const forms = document.querySelectorAll('form[name="google-sheet"]');
         forms.forEach(form => {
 
             form.addEventListener('submit', e => {
-
                 e.preventDefault();
-
                 if (!form.checkValidity()) {
                     // Trigger native form validation UI
                     form.reportValidity();
