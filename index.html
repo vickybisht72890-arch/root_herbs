@@ -100,7 +100,7 @@
                         <div class="relative w-full ">
 
                             <!-- <img src="assets/images/2.jpg" style="width: 100%"> -->
-                             <img src="assets/images/gold1.png" style="width: 100%">
+                            <img src="assets/images/gold1.png" style="width: 100%">
                             <!-- <video src="assets/video/video.webm" poster="assets/img/video-poster.webp" data-video="stop" style="width: 100%"></video> -->
                         </div>
                     </div>
@@ -624,7 +624,7 @@
                     </section>
                     <div>
                         <!-- <img src="assets/images/sub.webp" alt="" class="w-full"> -->
-                         <img src="assets/images/gold2.png" alt="" class="w-full">
+                        <img src="assets/images/gold2.png" alt="" class="w-full">
                     </div>
                     <div class="mt-4">
                         <section>
@@ -726,11 +726,12 @@
                         <div class=" mx-auto w-full max-w-3xl overflow-hidden">
                             <div class="px-2 pt-4 w-full">
                                 <div class="fontPoppins text-2xl md:text-4xl font-bold mb-4 text-center">Satisfactory
-                                    <span class="text-[#e91b1b]">Results</span></div>
+                                    <span class="text-[#e91b1b]">Results</span>
+                                </div>
                                 <div class="grid grid-cols-12 items-center justify-center py-5 px-2">
                                     <!-- <img src="assets/images/product.webp" alt="Aarogya Night Gold Capsule"
                                         class="sm:w-3/4 w-full mx-auto col-span-4 sm:col-span-6"> -->
-                                        <img src="assets/images/root hurb veer shakti.jpeg" alt="Aarogya Night Gold Capsule"
+                                    <img src="assets/images/root hurb veer shakti.jpeg" alt="Aarogya Night Gold Capsule"
                                         class="sm:w-3/4 w-full mx-auto col-span-4 sm:col-span-6">
                                     <div class="col-span-8 sm:col-span-6">
                                         <div class="fontJosefin sm:text-3xl text-[1.1rem] px-3 font-bold leading-tight">
@@ -958,42 +959,87 @@
 
 
     <script>
-        //const scriptURL = 'https://aarogyaindia.net/webwsmapi/leadpost.php';
-        // const scriptURL = 'https://script.google.com/macros/s/AKfycby3iqVJlnsxQ-zYlkss1fdR-OXtrW6acFibry5lCAKymNTmfKVVI6FOoAajPq7OlXc8ig/exec';
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec';
 
-        const forms = document.querySelectorAll('form[name="google-sheet"]');
+        const scriptURL =
+            'https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec';
+
+        const forms = document.querySelectorAll(
+            'form[name="google-sheet"]'
+        );
+
         forms.forEach(form => {
 
-            form.addEventListener('submit', e => {
+            form.addEventListener('submit', async function (e) {
+
                 e.preventDefault();
+
+                // Validate form
                 if (!form.checkValidity()) {
-                    // Trigger native form validation UI
                     form.reportValidity();
-                    return false;
+                    return;
                 }
 
-                // Disable the submit button and show a loading state
-                const submitButton = form.querySelector('button[type="submit"]');
-                const originalButtonText = submitButton.textContent;
-                submitButton.disabled = true;
-                submitButton.textContent = 'Processing your order...';
+                // Submit button
+                const submitButton =
+                    form.querySelector('button[type="submit"]');
 
-                fetch(scriptURL, {method: 'POST', body: new FormData(form)})
-                    .then(response => {
-                        console.log(response);
-                        //alert(response.status); alert(response.result);
-                        localStorage.setItem('formSubmitted', 'true');
-                        // window.location.href = 'thankyou.html';
-                        alert('Thank you your order placed')
-                    })
-                    .catch(error => {
-                        console.error('Error!', error.message);
-                        submitButton.disabled = false;
-                        submitButton.textContent = originalButtonText;
+                const originalButtonText =
+                    submitButton.textContent;
+
+                submitButton.disabled = true;
+                submitButton.textContent =
+                    'Processing your order...';
+
+                try {
+
+                    const formData = new FormData(form);
+
+                    const response = await fetch(scriptURL, {
+                        method: 'POST',
+                        body: formData
                     });
+
+                    console.log('Response:', response);
+
+                    // Mark form submitted
+                    localStorage.setItem(
+                        'formSubmitted',
+                        'true'
+                    );
+
+                    alert('Thank you! Your order has been placed.');
+
+                    // Optional:
+                    // window.location.href = 'thankyou.html';
+
+                    submitButton.disabled = false;
+                    submitButton.textContent =
+                        originalButtonText;
+
+                    // Optional: clear form
+                    form.reset();
+
+                } catch (error) {
+
+                    console.error(
+                        'Error submitting form:',
+                        error
+                    );
+
+                    alert(
+                        'Unable to place your order. Please try again.'
+                    );
+
+                    submitButton.disabled = false;
+                    submitButton.textContent =
+                        originalButtonText;
+                }
+
             });
+
         });
+
     </script>
 </body>
+
 </html>
