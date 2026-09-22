@@ -968,36 +968,24 @@
 
         document.addEventListener("DOMContentLoaded", function () {
 
-            // Google Apps Script Web App URL
-            const scriptURL =
-                "https://script.google.com/macros/s/AKfycbzJeehutgQYkeo7nQwH4I8DbLjqwybInQdwKskniS0aLKeAd4hYMRvHAISVmwE57w86/exec";
-
-
-            // Get form
             const form = document.getElementById("buyForm");
 
-
-            // Check form exists
-            if (!form) {
-                console.error("❌ Form with id 'buyForm' not found!");
-                return;
-            }
-
-
-            // Get submit button
             const submitButton =
                 form.querySelector('button[type="submit"]');
 
+            const iframe =
+                document.getElementById("google-sheet-frame");
 
-            // Submit event
-            form.addEventListener("submit", async function (event) {
 
-                // Stop normal form submission
-                event.preventDefault();
+            let submitting = false;
 
+
+            form.addEventListener("submit", function (event) {
 
                 // Validate form
                 if (!form.checkValidity()) {
+
+                    event.preventDefault();
 
                     form.reportValidity();
 
@@ -1005,182 +993,85 @@
                 }
 
 
-                // Save original button text
-                const originalButtonText =
-                    submitButton.textContent;
+                console.log("=================================");
+                console.log("Submitting form to Google Sheets");
+                console.log("=================================");
 
 
-                // Disable button
+                // Print form data
+                const formData = new FormData(form);
+
+                for (const [key, value] of formData.entries()) {
+
+                    console.log(key + ":", value);
+
+                }
+
+
+                submitting = true;
+
+
+                // Disable submit button
                 submitButton.disabled = true;
 
                 submitButton.textContent =
                     "Processing your order...";
 
 
-                try {
-
-                    console.log("=================================");
-                    console.log("Submitting form to Google Sheets");
-                    console.log("=================================");
-
-
-                    // Create FormData
-                    const formData = new FormData(form);
-
-
-                    // Print submitted data
-                    console.log("Form Data:");
-
-                    for (const [key, value] of formData.entries()) {
-
-                        console.log(
-                            key + ":",
-                            value
-                        );
-
-                    }
-
-
-                    console.log("---------------------------------");
-                    console.log("Sending request...");
-                    console.log("---------------------------------");
-
-
-                    // // Send request to Google Apps Script
-                    // const response = await fetch(scriptURL, {
-
-                    //     method: "POST",
-
-                    //     body: formData
-
-                    // });
-
-
-                    // Print HTTP response information
-                    // console.log("HTTP Status:", response.status);
-
-                    // console.log(
-                    //     "Response OK:",
-                    //     response.ok
-                    // );
-
-
-                    // console.log(
-                    //     "Response URL:",
-                    //     response.url
-                    // );
-
-
-                    // // Read response as text
-                    // const responseText =
-                    //     await response.text();
-
-
-                    // console.log("---------------------------------");
-
-                    // console.log(
-                    //     "Google Apps Script Response:"
-                    // );
-
-                    // console.log(responseText);
-
-                    // console.log("---------------------------------");
-
-
-                    // // Try to convert response to JSON
-                    // try {
-
-                    //     const result =
-                    //         JSON.parse(responseText);
-                    //     console.log(
-                    //         "Parsed Google Apps Script Response:"
-                    //     );
-
-                    //     console.log(result);
-
-
-                    //     // Check success
-                    //     if (result.success === true) {
-
-                    //         console.log(
-                    //             "✅ Data saved successfully in Google Sheet"
-                    //         );
-
-
-                    //         console.log(
-                    //             "Message:",
-                    //             result.message
-                    //         );
-
-
-                    //         alert(
-                    //             "Thank you! Your order has been placed successfully."
-                    //         );
-
-
-                    //         // Reset form
-                    //         form.reset();
-
-
-                    //     } else {
-
-                    //         console.error(
-                    //             "❌ Google Apps Script returned an error"
-                    //         );
-
-
-                    //         console.error(
-                    //             "Message:",
-                    //             result.message
-                    //         );
-
-
-                    //         alert(
-                    //             "Order failed: " +
-                    //             result.message
-                    //         );
-
-                    //     }
-
-
-                    // } catch (jsonError) {
-
-                    //     console.warn(
-                    //         "⚠️ Response is not valid JSON"
-                    //     );
-
-
-                    //     console.log(
-                    //         "Raw response:",
-                    //         responseText
-                    //     );
-
-                    // }
-
-
-                } catch (error) {
-
-                    console.error(
-                        "❌ Error submitting form:"
-                    );
-
-                    console.error(error);
-
-
-                    alert(
-                        "Unable to submit the form. Please try again."
-                    );
-
-
-                } finally {
-
-                    // Enable button again
-                    submitButton.disabled = false;
-
-                    submitButton.textContent =
-                        originalButtonText;
-
+                /*
+                 * IMPORTANT:
+                 *
+                 * DO NOT use:
+                 *
+                 * event.preventDefault();
+                 *
+                 * here.
+                 *
+                 * The browser will submit the form normally
+                 * to Google Apps Script.
+                 */
+
+            });
+
+
+            /*
+             * Google Apps Script loads its response
+             * inside the hidden iframe.
+             */
+
+            iframe.addEventListener("load", function () {
+
+                if (!submitting) {
+                    return;
                 }
+
+
+                console.log(
+                    "Google Apps Script request completed."
+                );
+
+
+                console.log(
+                    "The form was submitted to Google Apps Script."
+                );
+
+
+                alert(
+                    "Thank you! Your order has been placed successfully."
+                );
+
+
+                // Reset form
+                form.reset();
+
+
+                // Enable button
+                submitButton.disabled = false;
+
+                submitButton.textContent = "SUBMIT";
+
+
+                submitting = false;
 
             });
 
